@@ -7,6 +7,17 @@
   margin-bottom: 20px;
 }
 
+.category {
+  span {
+    background: #eee;
+    color: gray;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 4px 10px;
+  }
+}
+
 .publishedAt {
   margin-bottom: 40px;
 }

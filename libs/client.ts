@@ -1,24 +1,17 @@
-import { createClient } from "microcms-js-sdk";
+import { connect } from 'http2';
+import { createClient } from 'microcms-js-sdk';
 import type {
   MicroCMSQueries,
   MicroCMSImage,
   MicroCMSDate,
-} from "microcms-js-sdk";
-
-// ブログの型定義
-export type Blog = {
-  id: string;
-  title: string;
-  body: string;
-  eyecatch?: MicroCMSImage;
-} & MicroCMSDate;
+} from 'microcms-js-sdk';
 
 if (!process.env.MICROCMS_SERVICE_DOMAIN) {
-  throw new Error("MICROCMS_SERVICE_DOMAIN is required");
+  throw new Error('MICROCMS_SERVICE_DOMAIN is required');
 }
 
 if (!process.env.API_KEY) {
-  throw new Error("API_KEY is required");
+  throw new Error('API_KEY is required');
 }
 
 // API取得用のクライアントを作成
@@ -30,29 +23,15 @@ export const client = createClient({
 /**
  * ブログの一覧を取得
  * @param queries
- * @returns blogArr: Blog[]
+ * @returns listData
  */
 export const getBlog = async (queries?: MicroCMSQueries) => {
-  const listData = await client.getList<Blog>({
-    endpoint: "blog",
+  const listData = await client.getList({
+    endpoint: 'blog',
     queries,
   });
 
-  // 取得したデータをBlog型の形に整形して配列に格納 → 返却
-  const blogArr: Blog[] = [];
-  const { contents } = listData;
-  for (const content of contents) {
-    const blog: Blog = {
-      id: content.id,
-      title: content.title,
-      body: content.body,
-      createdAt: content.createdAt,
-      updatedAt: content.updatedAt,
-    };
-    blogArr.push(blog);
-  }
-
-  return blogArr;
+  return listData;
 };
 
 /**
@@ -66,8 +45,8 @@ export const getBlogDetail = async (
 ) => {
   // 指定した blogId の記事が存在しなければエラーをキャッチして null を返却
   try {
-    const detailData = await client.getListDetail<Blog>({
-      endpoint: "blog",
+    const detailData = await client.getListDetail({
+      endpoint: 'blog',
       contentId: blogId,
       queries,
     });

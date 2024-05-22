@@ -1,15 +1,16 @@
-import { notFound } from "next/navigation";
-import parse from "html-react-parser";
-import { getBlogDetail, getBlog } from "@/libs/client";
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import parse from 'html-react-parser';
+import { getBlogDetail, getBlog } from '@/libs/client';
 
-import styles from "@/app/styles/blog/Blog.detail.module.scss";
+import styles from '@/app/styles/blog/Blog.detail.module.scss';
 
 // ブログ一覧から各Pathの情報を抜き出して、別途配列を作成
 // generateStaticParams あらかじめ用意されているメソッドで、ここでURLの中身を定義している
 export async function generateStaticParams() {
-  const blogs = await getBlog();
+  const { contents } = await getBlog();
 
-  const paths = blogs.map((blog) => {
+  const paths = contents.map((blog) => {
     return {
       blogId: blog.id,
     };
@@ -34,7 +35,13 @@ export default async function StaticDetailPage({
   return (
     <div className={styles.wrapper}>
       <h1 className={styles.title}>{post.title}</h1>
+      {post.category && (
+        <p className={styles.category}>
+          Category:&emsp;<span>{post.category.name}</span>
+        </p>
+      )}
       <div className={styles.post}>{parse(post.body)}</div>
+      <Link href="/">TOP</Link>
     </div>
   );
 }
